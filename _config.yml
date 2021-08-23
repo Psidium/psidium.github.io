@@ -35,6 +35,12 @@ plugins:
 
 remote_theme: StartBootstrap/startbootstrap-clean-blog-jekyll
 
+markdown: CommonMarkGhPages
+
+commonmark:
+  options: ["SMART", "FOOTNOTES"]
+  #extensions: ["strikethrough", "autolink", "tables"
+
 # Exclude from processing.
 # The following items will not be processed, by default.
 # Any item listed under the `exclude:` key here will be automatically added to
