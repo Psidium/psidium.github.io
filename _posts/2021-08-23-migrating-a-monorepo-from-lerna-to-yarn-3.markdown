@@ -61,7 +61,7 @@ The `.yarnrc` contained a pointer to `.yarn/releases/yarn-1.22.11.cjs`, which I 
 
 ### nohoist
 
-We used the `nohoist` option in our `package.json`, which has a slightly different behavior in Yarn 3. Previously, you'd list in the `nohoist` option which packages should not be hoisted to the top-level `node_modules`  folder, and all sub-packages would follow that. Now, you'd go to the specific `package.json` and set the [installConfig][installConfig] option to avoid hoisiting that whole workspace. This is a great change if you ask me, specially if you are using Create React App.
+We used the `nohoist` option in our `package.json`, which has a slightly different behavior in Yarn 3. Previously, you'd list in the `nohoist` option which packages should not be hoisted to the top-level `node_modules`  folder, and all sub-packages would follow that. Now, you'd go to the specific `package.json` and set the [installConfig][installConfig] option to avoid hoisting that whole workspace. This is a great change if you ask me, specially if you are using Create React App.
 
 Since I only had `"nohoist": []` there, I just deleted the property, but your case may be different.
 
@@ -113,7 +113,7 @@ _e [Error]: convert-source-map@npm:^1.7.0: Invalid authentication (as an anonymo
 
 I simply could not find anything online that would point me in the right direction here, it appeared as if Yarn simply gave up on trying to authenticate me with my registry. After trying for long I started inserting `debugger` statements inside the Yarn compiled source code, gave up on that, bit the bullet and downloaded the berry codebase to debug yarn from inside.
 
-It turns out [Yarn can't merge your local registry config and your global's config][yarn-issue]. At least I learned how to debug yarn?
+It turns out [Yarn can't merge your local registry config and your global config][yarn-issue]. At least I learned how to debug yarn?
 
 
 #### How to debug Yarn berry itself
@@ -141,7 +141,7 @@ yarn plugin import workspace-tools
 
 ## lerna.json
 
-While it is installing the plugin, let's go ahead and delete our `lerna.json` file, remove all scripts that run `lerna`, and remove the dependendcy from our packages. If you only had your subpackages listed in `lerna.json`, it is time to migrate it to Yarn's ``package.json`:
+While it is installing the plugin, let's go ahead and delete our `lerna.json` file, remove all scripts that run `lerna`, and remove the dependency from our packages. If you only had your subpackages listed in `lerna.json`, it is time to migrate it to Yarn's ``package.json`:
 
 {% highlight json linenos %}
 // from lerna.json
@@ -167,7 +167,7 @@ While it is installing the plugin, let's go ahead and delete our `lerna.json` fi
 
 ## The [`workspace:` protocol][protocols]
 
-Yarn berry now supports a few things that lerna didn't, one of those things is explicitly setting the package imports to always match the ones on your monorepo. This means that it doesn't matter when or where this package is run, it will only work when running inside the monorepo. If your CI/CD are ready to deal with monorepos, this can be a great thing, and you can go ahead and change the version of your packages to `workspace:*` (this will match the folder you're in). Unfortunatedly, that is not my case and I'll have to go without this.
+Yarn berry now supports a few things that lerna didn't, one of those things is explicitly setting the package imports to always match the ones on your monorepo. This means that it doesn't matter when or where this package is run, it will only work when running inside the monorepo. If your CI/CD are ready to deal with monorepos, this can be a great thing, and you can go ahead and change the version of your packages to `workspace:*` (this will match the folder you're in). Unfortunately, that is not my case and I'll have to go without this.
 
 ## The `yarn start` command
 
@@ -188,7 +188,7 @@ yarn workspaces foreach -vpiR run start
 This command come from the `workspace-tools` plugin I've mentioned. It is using these options:
 
 * `v`: verbose, prefix the output with the package that printed that;
-* `p`: run in parrarel;
+* `p`: run in parallel;
 * `i` print all outputs in realtime;
 * `R`: recursive.
     * Recursive is the real beauty here. It will traverse your `dependencies`/`devDependencies` and only run `start` on the packages that actually need to be started! 
@@ -218,7 +218,7 @@ It turns out that when running the start command mentioned above, one can get th
 Internal Error: @my-company/launchpad@workspace:.: This package doesn't seem to be present in your lockfile; run "yarn install" to update the lockfile
 {% endhighlight %}
 
-As mentioned in the beggining, you need to delete the yarn.lock files inside all subpackges on yarn 3, something that yarn 1 created.
+As mentioned in the beginning, you need to delete the yarn.lock files inside all subpackges on yarn 3, something that yarn 1 created.
 
 </details>
 
@@ -265,7 +265,7 @@ yarn workspaces foreach -vtR run build
 
 and it will show you if your build is running or not. Turns out that mine wasn't well. 
 
-One of the packages I depend on didn't declare their dependencies correctly. In order to fix that I was tempted to add their dependency in my root's `package.json`, well, this broke other stuff in my project because the mere instalation of that particular package interfered with the generation of the html on my compilation (yeah). 
+One of the packages I depend on didn't declare their dependencies correctly. In order to fix that I was tempted to add their dependency in my root's `package.json`, well, this broke other stuff in my project because the mere installation of that particular package interfered with the generation of the html on my compilation (yeah). 
 
 The correct approach here is to use [Yarn's package extension](https://yarnpkg.com/configuration/yarnrc#packageExtensions) feature to correctly patch their `package.json` and load the package they are missing.
 
@@ -376,7 +376,7 @@ In my case, I went with the ignore/deletion route, but you should test your proj
 # Conclusion
 
 
-After doing all that work (seriously it took me days). We need to check if it works! Clone your project and try to `build`/`start` it! If it doens't work, well, you'll have to dig deeper.
+After doing all that work (seriously it took me days). We need to check if it works! Clone your project and try to `build`/`start` it! If it doesn't work, well, you'll have to dig deeper.
 
 
 Was it worth my investment? In my context, the time saved by having Zero Install is surely worth it, people can focus more on their code and less on their tooling.
